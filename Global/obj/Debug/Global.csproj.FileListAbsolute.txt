@@ -1,0 +1,7 @@
+E:\Users\acanom\source\repos\Global\Global\bin\Debug\Global.exe.config
+E:\Users\acanom\source\repos\Global\Global\bin\Debug\Global.exe
+E:\Users\acanom\source\repos\Global\Global\bin\Debug\Global.pdb
+E:\Users\acanom\source\repos\Global\Global\obj\Debug\Global.csproj.AssemblyReference.cache
+E:\Users\acanom\source\repos\Global\Global\obj\Debug\Global.csproj.CoreCompileInputs.cache
+E:\Users\acanom\source\repos\Global\Global\obj\Debug\Global.exe
+E:\Users\acanom\source\repos\Global\Global\obj\Debug\Global.pdb

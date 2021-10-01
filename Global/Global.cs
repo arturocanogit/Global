@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Mail;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -11,6 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Script.Serialization;
 using System.Xml;
 
 namespace Global
@@ -22,13 +24,52 @@ namespace Global
     public class Utilerias
     {
         /// <summary>
+        /// Metodo para envio de peticiones http
+        /// </summary>
+        /// <typeparam name="Result"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="method"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public static async Task<Result> HttpRequest<Result>(string url, HttpMethod method)
+        {
+            HttpClient client = new HttpClient();
+            var response  = await client.SendAsync(new HttpRequestMessage
+            {
+                RequestUri = new Uri(url),
+                Method = method
+            });
+            var res = await response.Content.ReadAsStringAsync();
+            return Deserialize<Result>(res);
+        }
+        /// <summary>
+        /// Metodo para deserializar una cadena
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public static T Deserialize<T>(string content)
+        {
+            return new JavaScriptSerializer().Deserialize<T>(content);
+        }
+        /// <summary>
+        /// Metodo para serializar una cadena
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public static string Serialize<T>(object obj)
+        {
+            return new JavaScriptSerializer().Serialize(obj);
+        }
+        /// <summary>
         /// Envio de correos de manera asincrona
         /// </summary>
         /// <param name="subject"></param>
         /// <param name="to"></param>
         /// <param name="body"></param>
         /// <param name="eventHandler"></param>
-        public static void EnvioMailAsync(string subject, string to, string body, SendCompletedEventHandler eventHandler)
+        public static void EnvioMailAsync(string subject, string to, string body, SendCompletedEventHandler eventHandler = null)
         {
             string from = GetAppSetting("EMAIL_FROM");
             string smtp = GetAppSetting("EMAIL_SMTP");
@@ -272,6 +313,15 @@ namespace Global
         public static string ToEncriptAES(this string text)
         {
             return Seguridad.EncriptAES(text);
+        }
+        /// <summary>
+        /// Desencripta la cadena con algoritmo aes
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string ToDencriptAES(this string text)
+        {
+            return Seguridad.DencriptAES(text);
         }
         /// <summary>
         /// Convierte un datatable en lista
