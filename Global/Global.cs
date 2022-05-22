@@ -24,6 +24,39 @@ namespace Global
     public class Utilerias
     {
         /// <summary>
+        /// Mapea todas las propiedades que hacen match de un objeto con otro
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="tipoHabitacionDto"></param>
+        /// <returns></returns>
+        public static TResult Mapeador<TResult, TSource>(TSource tipoHabitacionDto) where TResult : new()
+        {
+            TResult result = Activator.CreateInstance<TResult>();
+            Type typeSource = typeof(TSource);
+            foreach (var property in result.GetType().GetProperties())
+            {
+                var propertySource = typeSource.GetProperty(property.Name);
+                if (propertySource != null)
+                {
+                    property.SetValue(result,
+                    typeSource.GetProperty(property.Name).GetValue(tipoHabitacionDto));
+                }
+            }
+            return result;
+        }
+        /// <summary>
+        /// Convierte un stream en un array de bytes
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static byte[] StreamToByteArray(Stream input)
+        {
+            MemoryStream ms = new MemoryStream();
+            input.CopyTo(ms);
+            return ms.ToArray();
+        }
+        /// <summary>
         /// Metodo para envio de peticiones http
         /// </summary>
         /// <typeparam name="Result"></typeparam>
@@ -34,7 +67,7 @@ namespace Global
         public static async Task<Result> HttpRequest<Result>(string url, HttpMethod method)
         {
             HttpClient client = new HttpClient();
-            var response  = await client.SendAsync(new HttpRequestMessage
+            var response = await client.SendAsync(new HttpRequestMessage
             {
                 RequestUri = new Uri(url),
                 Method = method
@@ -360,6 +393,24 @@ namespace Global
         {
             return double.TryParse(cadena, out _);
         }
+        /// <summary>
+        /// Valida si un objeto es no nulo
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static bool IsNotNull(this object obj)
+        {
+            return obj != null;
+        }
+        /// <summary>
+        /// Valida si un objeto es nulo
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static bool IsNull(this object obj)
+        {
+            return obj == null;
+        }
     }
     public static class Configuracion
     {
@@ -434,7 +485,6 @@ namespace Global
         }
     }
 }
-
 
 
 
